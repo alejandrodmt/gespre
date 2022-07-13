@@ -1,4 +1,4 @@
 # GESPRE
-Gestion de la prenomina del departamento de tecnologia
+Gestión de la Prenómina del Departamento de Tecnología
 ## AUTOR
 - alejandrodmt
