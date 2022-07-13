@@ -1,15 +1,25 @@
 import { api } from "src/boot/axios";
-import { ref  } from "vue";
+import { ref } from "vue";
 
-export const rows = ref([]) 
+export const rows = ref([]);
 
-function usuariosListar () {
- api.get("/apirest/all").then((response)=>{
-     rows.value=response.data
- }).catch((error)=>
- console.log(error))
+function usuariosListar() {
+  api
+    .get("/apirest/all")
+    .then((response) => {
+      rows.value = response.data;
+    })
+    .catch((error) => console.log(error));
 }
 
+function ListarusuariosGespre() {
+  api
+    .get("/gespre/usuario/")
+    .then((response) => {
+      rows.value = response.data;
+    })
+    .catch((error) => console.log(error));
+}
 
-export default usuariosListar
+export default ListarusuariosGespre;
 //export {rows}
