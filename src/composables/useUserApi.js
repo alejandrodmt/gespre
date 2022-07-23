@@ -3,15 +3,6 @@ import { ref } from "vue";
 
 export const rows = ref([]);
 
-function usuariosListar() {
-  api
-    .get("/apirest/all")
-    .then((response) => {
-      rows.value = response.data;
-    })
-    .catch((error) => console.log(error));
-}
-
 function ListarusuariosGespre() {
   api
     .get("/gespre/usuario/")

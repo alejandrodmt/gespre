@@ -22,27 +22,6 @@ import { rows } from "src/composables/useUserApi.js";
 
 //usuariosListar();
 
-const columns = [
-  {
-    label: "Nombre",
-    name: "nombre",
-    field: "nombre",
-    sortable: true,
-  },
-  {
-    label: "Edad",
-    name: "edad",
-    field: "edad",
-    sortable: true,
-  },
-  {
-    label: "Apellidos",
-    name: "apellidos",
-    field: "apellidos",
-    sortable: true,
-  },
-];
-
 const columnasGespre = [
   {
     label: "Nombre",
@@ -63,7 +42,7 @@ const columnasGespre = [
     sortable: true,
   },
   {
-    label: "Usuario",
+    label: "Solapin",
     name: "solapin",
     field: "solapin",
     sortable: true,
