@@ -1,39 +1,80 @@
 <template>
-  <q-layout view="hHh lpR fff">
-
-    <q-header elevated class="bg-primary text-white">
+  <q-layout view="hHh lpR fff" class="shadow-2 rounded-borders">
+    <q-header elevated class="bg-black text-white glossy">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="leftDrawerOpen = !leftDrawerOpen" />
+        <q-btn
+          dense
+          flat
+          round
+          icon="menu"
+          @click="leftDrawerOpen = !leftDrawerOpen"
+        >
+          <q-tooltip>Menu</q-tooltip>
+        </q-btn>
 
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
-          GESPRE
+          <q-btn to="/">
+            <q-avatar link="prenominas">
+              <img
+                src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg"
+              />
+            </q-avatar>
+            GESPRE
+          </q-btn>
         </q-toolbar-title>
+
+        <q-btn round flat icon="person">
+          <q-tooltip>Usuario</q-tooltip>
+        </q-btn>
+
+        <q-btn dense flat no-wrap>
+          <q-avatar rounded size="40px">
+            <q-badge color="red" floating>4</q-badge>
+            <img src="https://cdn.quasar.dev/img/avatar3.jpg" />
+          </q-avatar>
+          <q-icon
+            name="arrow_drop_down"
+            size="16px"
+            dropdown-icon="change_history"
+          />
+
+          <q-menu auto-close>
+            <q-list dense>
+              <q-item class="GL__menu-link-signed-in">
+                <q-item-section>
+                  <div>Signed in as <strong>Mary</strong></div>
+                </q-item-section>
+              </q-item>
+              <q-separator />
+              <q-item clickable class="GL__menu-link">
+                <q-item-section>Your profile</q-item-section>
+              </q-item>
+              <q-item clickable class="GL__menu-link">
+                <q-item-section>Your repositories</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
+      :mini="miniState"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
       bordered
+      class="bg-grey-3"
     >
       <q-list>
-        <q-item-label
-          header
-        >
-          MENU
-        </q-item-label>
+        <q-item-label header> MENU </q-item-label>
 
         <EssentialLink
           v-for="link in linksList"
           :key="link.title"
           v-bind="link"
         />
-        
-<essential-link title="mojon" icon=message caption=mojncto link=a />
-
       </q-list>
     </q-drawer>
 
@@ -41,35 +82,52 @@
       <router-view />
     </q-page-container>
 
-    <q-footer elevated class="bg-grey-8 text-white">
+    <q-footer elevated class="bg-grey-8 text-white glossy">
       <q-toolbar>
-        <q-toolbar-title>
-      </q-toolbar-title>
+        <q-toolbar-title class="text-center"> Footer </q-toolbar-title>
       </q-toolbar>
     </q-footer>
-
   </q-layout>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+import { ref } from "vue";
+import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
   {
-    title: 'Inicio',
-    caption: 'Ir a inico',
-    icon: 'school',
-    link: ''
+    title: "Preominas",
+    caption: "",
+    icon: "code",
+    link: "prenominas",
   },
   {
-    title: 'Preominas',
-    caption: '',
-    icon: 'code',
-    link: 'prenominas'
-  }
-]
+    title: "Pruevas",
+    caption: "",
+    icon: "las la-praying-hands",
+    link: "pruebas",
+  },
+  {
+    title: "Condicional rendering",
+    caption: "",
+    icon: "lab la-vuejs",
+    link: "rendering",
+  },
+  {
+    title: "Manejo de eventos",
+    caption: "",
+    icon: "las la-tachometer-alt",
+    link: "manejo",
+  },
+  {
+    title: "Lifecycle Hooks",
+    caption: "Lifecycle Hooks",
+    icon: "las la-heartbeat",
+    link: "hooks",
+  },
+];
 
-const leftDrawerOpen = ref(false)
-var abierto = leftDrawerOpen.value
+const miniState = ref(true);
+const leftDrawerOpen = ref(false);
+var abierto = leftDrawerOpen.value;
 </script>
