@@ -23,14 +23,11 @@
           </q-btn>
         </q-toolbar-title>
 
-        <q-btn round flat icon="person">
+        <q-btn dense flat no-wrap v-if="loggedUser">
           <q-tooltip>Usuario</q-tooltip>
-        </q-btn>
-
-        <q-btn dense flat no-wrap>
           <q-avatar rounded size="40px">
-            <q-badge color="red" floating>4</q-badge>
-            <img src="https://cdn.quasar.dev/img/avatar3.jpg" />
+            <q-badge color="red" floating>.</q-badge>
+            <span>{{ loggedUser.usuario.charAt(0) }}</span>
           </q-avatar>
           <q-icon
             name="arrow_drop_down"
@@ -42,7 +39,7 @@
             <q-list dense>
               <q-item class="GL__menu-link-signed-in">
                 <q-item-section>
-                  <div>Signed in as <strong>Mary</strong></div>
+                  <strong>{{ loggedUser.usuario }}</strong>
                 </q-item-section>
               </q-item>
               <q-separator />
@@ -51,7 +48,7 @@
               </q-item>
 
               <q-item clickable v-ripple @click="cerrarSeccion">
-                <q-item-section> Cerrar sección </q-item-section>
+                <q-item-section> Cerrar sesión </q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -95,13 +92,16 @@
 import { ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 import { useRouter } from "vue-router";
+import { loggedUser } from "src/composables/useState";
 const router = useRouter();
 
 function cerrarSeccion() {
   //este es el que se debe usar seguro:
   //localStorage.removeItem(nombreDelLocalStore)
-  localStorage.clear();
-  console.log("cerrando seccion");
+  localStorage.removeItem("token");
+  localStorage.removeItem("loggedUser");
+  loggedUser.value = null;
+  console.log("cerrando sesion");
   router.push({ name: "login" });
 }
 

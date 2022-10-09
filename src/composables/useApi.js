@@ -3,6 +3,7 @@ import { Notify, Dialog, QSpinnerGears } from "quasar";
 import { api } from "boot/axios";
 import isJwtTokenExpired, { decode } from "jwt-check-expiry";
 import { useRouter } from "vue-router";
+import { loggedUser } from "./useState";
 
 export default function useApi(url) {
   const router = useRouter();
@@ -134,7 +135,6 @@ export default function useApi(url) {
     console.log("🚀 useAPI autorizar");
 
     // Usuario del token
-    let usuarios = null;
 
     // Si se recibe un token y este no ha expirado, se guarda en localStorage tanto el token mismo como el usuario decodificado
     if (token && !isJwtTokenExpired(token)) {
@@ -145,10 +145,15 @@ export default function useApi(url) {
       console.log("🚀 useAPI.js autorizar token != null", token != null);
 
       localStorage.setItem("token", token);
-      usuarios = decode(token).payload.usuarios;
-      localStorage.setItem("loggedUser", JSON.stringify(usuarios));
+      let payload = decode(token).payload;
+      loggedUser.value = {
+        usuario: payload.sub,
+        rol: payload.roles[0],
+      };
+      localStorage.setItem("loggedUser", JSON.stringify(loggedUser.value));
 
-      console.log("usuarios: " + usuarios);
+      console.log("usuarios: " + loggedUser.value.usuario);
+      console.log("rol: " + loggedUser.value.rol);
       console.log(
         "localStore: " +
           localStorage +
