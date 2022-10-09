@@ -1,9 +1,9 @@
 <template>
-  <img src="~assets/wave.png" class="wave" alt="login-wave" />
   <div class="row" style="height: 90vh">
-    <div class="col-0 col-md-6 flex justify-center content-center">
-      <img src="~assets/login.svg" class="responsive" alt="login-image" />
+    <div class="col-0 col-md-6 justify-center content-left">
+      <img src="~assets/proteccion.png" class="responsive" alt="login-image" />
     </div>
+
     <div
       v-bind:class="{
         'justify-center': $q.screen.md || $q.screen.sm || $q.screen.xs,
@@ -15,7 +15,7 @@
       >
         <q-card-section>
           <q-avatar size="103px" class="absolute-center shadow-10">
-            <img src="~assets/avatar.svg" alt="avatar" />
+            <img src="~assets/cerradura-con-llave2.png" alt="avatar" />
           </q-avatar>
         </q-card-section>
         <q-card-section>
@@ -28,26 +28,46 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <q-form class="q-gutter-md" @submit.prevent="submitForm">
-            <q-input label="Username" v-model="login.username"> </q-input>
-            <q-input label="Password" type="password" v-model="login.password">
+          <q-form @submit="onSubmit" ref="formulario" class="q-gutter-md">
+            <q-input
+              label="Usuario"
+              v-model="loginObject.usuarios"
+              lazy-rules
+              :rules="[
+                (val) =>
+                  (val && val.length > 0) || 'Este campo no puede estar vacío',
+              ]"
+            >
+            </q-input>
+            <q-input
+              label="Contraseña"
+              v-model="loginObject.pass"
+              :type="showPassword ? 'text' : 'password'"
+              lazy-rules
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') ||
+                  'Este campo no puede estar vacío',
+              ]"
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="showPassword ? 'r_visibility' : 'r_visibility_off'"
+                  class="cursor-pointer"
+                  @click="showPassword = !showPassword"
+                />
+              </template>
             </q-input>
             <div>
               <q-btn
                 class="full-width"
-                color="primary"
-                label="Login"
+                label="Aceptar"
+                push
+                no-caps
                 type="submit"
+                color="primary"
                 rounded
               ></q-btn>
-              <div class="text-center q-mt-sm q-gutter-lg">
-                <router-link class="text-white" to="/login"
-                  >Esqueceu a senha?</router-link
-                >
-                <router-link class="text-white" to="/login"
-                  >Criar conta</router-link
-                >
-              </div>
             </div>
           </q-form>
         </q-card-section>
@@ -56,63 +76,28 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useQuasar } from "quasar";
-import { mapActions } from "vuex";
+import { ref } from "vue";
+import authService from "src/services/serviceAuth";
 
-let $q;
+const formulario = ref();
+const loginObject = ref({ usuarios: "", pass: "" });
+const showPassword = ref(false);
+const $q = useQuasar();
 
-export default {
-  name: "LoginPage",
-  data() {
-    return {
-      login: {
-        username: "Joabson",
-        password: "a2d4g6j8",
-      },
-    };
-  },
-  methods: {
-    ...mapActions("auth", ["doLogin"]),
-    async submitForm() {
-      if (!this.login.username || !this.login.password) {
-        $q.notify({
-          type: "negative",
-          message: "Os dados informados são inválidos.",
-        });
-      } else if (this.login.password.length < 6) {
-        $q.notify({
-          type: "negative",
-          message: "A senha deve ter 6 ou mais caracteres.",
-        });
-      } else {
-        try {
-          await this.doLogin(this.login);
-          const toPath = this.$route.query.to || "/admin";
-          this.$router.push(toPath);
-        } catch (err) {
-          if (err.response.data.detail) {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.detail,
-            });
-          }
-        }
-      }
-    },
-  },
-  mounted() {
-    $q = useQuasar();
-  },
+const { login } = authService();
+
+const onSubmit = () => {
+  console.log(
+    loginObject.value.usuarios + " onSumit " + loginObject.value.pass
+  );
+  login(loginObject.value);
+  onReset();
+};
+
+const onReset = () => {
+  formulario.value.resetValidation();
+  loginObject.value = { usuarios: "", pass: "" };
 };
 </script>
-
-<style scoped>
-.wave {
-  position: fixed;
-  height: 100%;
-  left: 0;
-  bottom: 0;
-  z-index: -1;
-}
-</style>

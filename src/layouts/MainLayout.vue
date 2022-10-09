@@ -47,10 +47,11 @@
               </q-item>
               <q-separator />
               <q-item clickable class="GL__menu-link">
-                <q-item-section>Your profile</q-item-section>
+                <q-item-section>....</q-item-section>
               </q-item>
-              <q-item clickable class="GL__menu-link">
-                <q-item-section>Your repositories</q-item-section>
+
+              <q-item clickable v-ripple @click="cerrarSeccion">
+                <q-item-section> Cerrar sección </q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -93,6 +94,16 @@
 <script setup>
 import { ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+function cerrarSeccion() {
+  //este es el que se debe usar seguro:
+  //localStorage.removeItem(nombreDelLocalStore)
+  localStorage.clear();
+  console.log("cerrando seccion");
+  router.push({ name: "login" });
+}
 
 const linksList = [
   {
@@ -106,24 +117,6 @@ const linksList = [
     caption: "",
     icon: "las la-praying-hands",
     link: "pruebas",
-  },
-  {
-    title: "Condicional rendering",
-    caption: "",
-    icon: "lab la-vuejs",
-    link: "rendering",
-  },
-  {
-    title: "Manejo de eventos",
-    caption: "",
-    icon: "las la-tachometer-alt",
-    link: "manejo",
-  },
-  {
-    title: "Lifecycle Hooks",
-    caption: "Lifecycle Hooks",
-    icon: "las la-heartbeat",
-    link: "hooks",
   },
 ];
 

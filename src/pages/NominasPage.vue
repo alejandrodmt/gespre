@@ -8,10 +8,11 @@
     <q-table
       dense
       title="Usuarios"
-      :rows="rows"
+      :rows="list"
       :columns="columnasGespre"
       row-key="id"
       :fullscreen="f"
+      :filter="filter"
       separator="cell"
     >
       <template v-slot:body-cell-accion="props">
@@ -19,7 +20,7 @@
           <q-btn
             icon="create"
             color="primary"
-            @click="editUser(props.row)"
+            @click="editUser(props.row.id)"
           ></q-btn>
           <q-btn
             class="q-ml-sm"
@@ -31,9 +32,21 @@
       </template>
 
       <template v-slot:top-left>
-        <q-toggle v-model="f" />
+        <q-toggle label="Ampliar" icon="las la-compress" v-model="f" />
+
+        <q-btn
+          color="primary"
+          label="Agregar Usuario"
+          :to="{ path: 'usuarios' }"
+        />
       </template>
+
       <template v-slot:top-right>
+        <q-input dense debounce="300" v-model="filter" placeholder="Buscar">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
         <q-btn
           icon="add"
           color="primary"
@@ -58,7 +71,11 @@
           <q-input v-model="userData.rol" label="Rol"></q-input>
         </q-card-section>
         <q-card-section>
-          <q-btn class="q-ml-sm" label="Añadir" @click="AgregarUser()"></q-btn>
+          <q-btn
+            class="q-ml-sm"
+            label="Añadir"
+            @click="guardarUsuario()"
+          ></q-btn>
           <q-btn
             class="q-ml-sm"
             label="Cancelar"
@@ -68,17 +85,33 @@
       </q-card>
     </q-dialog>
   </div>
-  <!-- <div>{{ selected }}</div> -->
 </template>
 
 <script setup>
-import { ref } from "vue";
-import ListarusuariosGespre from "src/composables/useUserApi.js";
-import { rows } from "src/composables/useUserApi.js";
+import { ref, defineComponent, onMounted } from "vue";
 import { api } from "src/boot/axios";
-ListarusuariosGespre();
+import { useRouter } from "vue-router";
+
+///service
+import usuarioService from "src/services/serviceUsuario";
+const router = useRouter();
+//listar
+const list = ref([]);
+const { Listar } = usuarioService();
+
+//si no tengo ningun token no se activa Listar() y se redireccion a otra page
+onMounted(() => {
+  if (localStorage.getItem("token")) {
+    console.log(localStorage.getItem("token") + " esejejje");
+    Listar(list);
+  } else {
+    router.push({ name: "login" });
+  }
+});
 
 const show_dialog = ref(false);
+const f = ref(false);
+const filter = ref("");
 
 const userData = ref({
   id: "",
@@ -90,40 +123,14 @@ const userData = ref({
   rol: "",
 });
 
-function editUser(item) {
-  console.log(item);
-  this.userData.id = item.id;
-  this.userData.nombre = item.nombre;
-  this.userData.apellidos = item.apellidos;
-  this.userData.usuarios = item.usuarios;
-  this.userData.solapin = item.solapin;
-  this.userData.pass = item.pass;
-  this.userData.rol = item.rol;
-  console.log(userData);
-  this.show_dialog = true;
-}
-function deletetUser(idUser) {
-  console.log(idUser);
-  api
-    .delete("/gespre/usuario/" + idUser)
-    .then((response) => {
-      ListarusuariosGespre();
-      console.log(response);
-    })
-    .catch((error) => console.log(error));
+function editUser(id) {
+  router.push({ name: "formPage", params: { id } });
 }
 
-function AgregarUser() {
-  console.log(this.userData);
-  api
-    .post("/gespre/usuario/", this.userData)
-    .then((response) => {
-      ListarusuariosGespre();
-      this.show_dialog = false;
-      this.userData = {}; ///esto es valido o puede dat algun problema
-      console.log(response);
-    })
-    .catch((error) => console.log(error));
+function deletetUser(idUser) {
+  console.log(idUser + " jajaj");
+  const { eliminar } = usuarioService();
+  eliminar(idUser, list);
 }
 
 const columnasGespre = [
@@ -170,6 +177,4 @@ const columnasGespre = [
     sortable: true,
   },
 ];
-
-const f = ref(false);
 </script>

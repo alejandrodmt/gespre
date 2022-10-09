@@ -5,13 +5,21 @@ const routes = [
     children: [
       { path: "", component: () => import("pages/IndexPage.vue") },
       { path: "pruebas", component: () => import("pages/PruebasPage.vue") },
-      { path: "rendering", component: () => import("pages/RenderingPage.vue") },
-      { path: "hooks", component: () => import("pages/LifecycleHooks.vue") },
       {
-        path: "manejo",
-        component: () => import("pages/ManejoEventosPage.vue"),
+        path: "login",
+        name: "login",
+        component: () => import("pages/LoginPage.vue"),
       },
-      { path: "prenominas", component: () => import("pages/NominasPage.vue") },
+      {
+        path: "prenominas",
+        name: "prenominas",
+        component: () => import("pages/NominasPage.vue"),
+      },
+      {
+        path: "usuarios/:id?", // el signo de interrogacion(?) significa q es un campo no obligatorio para ese parametroo
+        name: "formPage",
+        component: () => import("pages/formPage.vue"),
+      },
     ],
   },
 
